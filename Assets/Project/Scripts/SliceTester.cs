@@ -23,12 +23,16 @@ public class SliceTester : MonoBehaviour
 		}
 		if( holding )
 		{
+			Vector3 end = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			end.z = 0f;
+			//Debug.Log( Vector3.Angle( start, end ) );
+
 			if( Input.GetMouseButton(0) == false )
 			{
-				Vector3 end = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
 
 				start.z = 0f;
-				end.z = 0f;
+
 
 				Debug.DrawLine(start, end, Color.red, 2f);
 

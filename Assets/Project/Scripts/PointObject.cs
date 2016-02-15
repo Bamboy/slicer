@@ -8,7 +8,7 @@ public class PointObject : MonoBehaviour, ISlicable
 	void ISlicable.OnSliced()
 	{
 		//Give us points
-		Debug.Log("Sliced "+ pointValue);
+		GameManager.Instance.AddPoints( pointValue );
 	}
 
 

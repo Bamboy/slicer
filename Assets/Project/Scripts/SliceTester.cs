@@ -50,7 +50,7 @@ public class SliceTester : MonoBehaviour
 			{
 				//See if the mouse hit something since last frame
 				RaycastHit2D data = Physics2D.Linecast( lastPos, end );
-				if( data != null )
+				if( data.collider != null )
 				{
 					ISlicable s = data.collider.GetComponent<ISlicable>();
 					if( s != null )

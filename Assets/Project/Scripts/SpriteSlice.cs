@@ -90,7 +90,7 @@ public class SpriteSlice : MonoBehaviour
 		cloneImg.fillClockwise = !original.fillClockwise;
 
 		Destroy( obj.GetComponent<Collider2D>() );
-		Destroy( obj, 10f );
+		Destroy( obj.gameObject, 10f );
 		Destroy( clone.GetComponent<Collider2D>() );
 		Destroy( clone, 10f );
 

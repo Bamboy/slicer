@@ -87,17 +87,13 @@ public class ObjectSpawner : MonoBehaviour
 		{
 		case 0:
 			return leftSpawnPoint.position;
-			break;
 		case 1:
 			return midSpawnPoint.position;
-			break;
 		case 2:
 			return rightSpawnPoint.position;
-			break;
 		default:
 			Debug.LogError("WTF");
 			return Vector3.zero;
-			break;
 		}
 	}
 }

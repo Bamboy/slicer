@@ -60,7 +60,9 @@ public class SpriteSlice : MonoBehaviour
 			Vector3 dir = VectorExtras.Direction(start, end);
 			Vector3 rightAngle = edgeIndex % 2 == 0 ? obj.up : obj.right;
 			float angle = Mathf.PingPong(Vector3.Angle( rightAngle, dir ), 90f);
-			Debug.Log( angle );
+
+			if( _doDebug )
+				Debug.Log( angle );
 
 			original.fillAmount = angle / 90f;
 		}
@@ -70,7 +72,9 @@ public class SpriteSlice : MonoBehaviour
 			Vector3 rightAngle = edgeIndex % 2 == 0 ? obj.right : obj.up;
 			Vector3 dir = (edgeIndex == 0 || edgeIndex == 3) ? -VectorExtras.Direction(start, end) : VectorExtras.Direction(start, end);
 			float angle = Vector3.Angle( rightAngle, dir );
-			Debug.Log( angle );
+
+			if( _doDebug )
+				Debug.Log( angle );
 
 			original.fillAmount = (angle * innerFillMultiplier.Evaluate( angle/180f )) / 180f;
 		}
@@ -85,12 +89,17 @@ public class SpriteSlice : MonoBehaviour
 		cloneImg.fillAmount = Mathf.PingPong( original.fillAmount + 1f, 1f );
 		cloneImg.fillClockwise = !original.fillClockwise;
 
-		clone.AddComponent<Rigidbody2D>();
+		Destroy( obj.GetComponent<Collider2D>() );
+		Destroy( obj, 10f );
+		Destroy( clone.GetComponent<Collider2D>() );
+		Destroy( clone, 10f );
+
+		//TODO make clone inherit obj's speed and rotation
 
 	}
 
 	//Snap the inbound slice position to one of the 8 positions along the edge of our bounding box.
-	public Vector3 SnapToBounds( RectTransform obj, Vector3 pos, out bool isCorner, out int chosenIndex )
+	Vector3 SnapToBounds( RectTransform obj, Vector3 pos, out bool isCorner, out int chosenIndex )
 	{
 		Vector3[] corners = new Vector3[4];
 		Vector3[] inners = new Vector3[4];

@@ -6,6 +6,7 @@ public class SliceTester : MonoBehaviour
 
 	//public RectTransform testdummy;
 	SpriteSlice slicer;
+
 	void Start () {
 		slicer = GetComponent<SpriteSlice>();
 	}

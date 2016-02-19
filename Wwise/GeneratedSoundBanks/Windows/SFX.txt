@@ -1,0 +1,8 @@
+Event	ID	Name			Wwise Object Path	Notes
+	3569113157	Slice			\Default Work Unit\Slice	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	152531998	Slice01	C:\Users\adamf\Documents\slicer\Wwise\.cache\Windows\SFX\Slice01_54CF7BDC.wem		\Actor-Mixer Hierarchy\Default Work Unit\Slice\Slice01		86888
+	164552320	Slice01_02	C:\Users\adamf\Documents\slicer\Wwise\.cache\Windows\SFX\Slice01_A05DDB77.wem		\Actor-Mixer Hierarchy\Default Work Unit\Slice\Slice01_02		103940
+	199055612	Slice01_01	C:\Users\adamf\Documents\slicer\Wwise\.cache\Windows\SFX\Slice01_D68D4222.wem		\Actor-Mixer Hierarchy\Default Work Unit\Slice\Slice01_01		76548
+

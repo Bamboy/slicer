@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="10" SoundbankVersion="113">
+	<RootPaths>
+		<ProjectRoot>C:\Users\adamf\Documents\slicer\Wwise\</ProjectRoot>
+		<SourceFilesRoot>C:\Users\adamf\Documents\slicer\Wwise\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>C:\Users\adamf\Documents\slicer\Wwise\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>C:\Users\adamf\Documents\slicer\Wwise\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="393239870" Language="SFX">
+			<ShortName>SFX</ShortName>
+			<Path>SFX.bnk</Path>
+			<IncludedEvents>
+				<Event Id="3569113157" Name="Slice"/>
+			</IncludedEvents>
+			<IncludedMemoryFiles>
+				<File Id="152531998" Language="SFX">
+					<ShortName>Slice01.wav</ShortName>
+					<Path>SFX\Slice01_54CF7BDC.wem</Path>
+				</File>
+				<File Id="164552320" Language="SFX">
+					<ShortName>Slice01.wav</ShortName>
+					<Path>SFX\Slice01_A05DDB77.wem</Path>
+				</File>
+				<File Id="199055612" Language="SFX">
+					<ShortName>Slice01.wav</ShortName>
+					<Path>SFX\Slice01_D68D4222.wem</Path>
+				</File>
+			</IncludedMemoryFiles>
+		</SoundBank>
+		<SoundBank Id="1355168291" Language="SFX">
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationCache Version="1" SchemaVersion="70">
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="3858379779" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Attenuations\Default Work Unit.wwu" DateLow="3858587921" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Control Surface Sessions\Default Work Unit.wwu" DateLow="3858334683" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Conversion Settings\Default Work Unit.wwu" DateLow="3858678297" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Conversion Settings\Factory Conversion Settings.wwu" DateLow="514230528" DateHigh="30449157"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Dynamic Dialogue\Default Work Unit.wwu" DateLow="3858567907" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Effects\Default Work Unit.wwu" DateLow="3858487631" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Effects\Factory Effects.wwu" DateLow="514230528" DateHigh="30449157"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Events\Default Work Unit.wwu" DateLow="3858404926" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Game Parameters\Default Work Unit.wwu" DateLow="3858467741" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Interactive Music Hierarchy\Default Work Unit.wwu" DateLow="3858547886" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Master-Mixer Hierarchy\Default Work Unit.wwu" DateLow="3858354763" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Mixing Sessions\Default Work Unit.wwu" DateLow="3858608072" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Modulators\Default Work Unit.wwu" DateLow="3858718283" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Presets\Default Work Unit.wwu" DateLow="3858507764" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Queries\Default Work Unit.wwu" DateLow="3858658196" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Queries\Factory Queries.wwu" DateLow="514230528" DateHigh="30449157"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\SoundBanks\Default Work Unit.wwu" DateLow="3858698110" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Soundcaster Sessions\Default Work Unit.wwu" DateLow="3858527825" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\States\Default Work Unit.wwu" DateLow="3858447571" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Switches\Default Work Unit.wwu" DateLow="3858424950" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Triggers\Default Work Unit.wwu" DateLow="3858633046" DateHigh="30501726"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Wwise.adamf.wsettings" DateLow="1360657388" DateHigh="30501727"/>
+	<ValidationCacheItem File="C:\Users\adamf\Documents\slicer\Wwise\Wwise.wproj" DateLow="502548187" DateHigh="30501727"/>
+</ValidationCache>

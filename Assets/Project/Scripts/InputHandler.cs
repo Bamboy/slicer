@@ -14,23 +14,28 @@ public class InputHandler : MonoBehaviour {
     LineRenderer lr;
     SpriteSlice slicer;
 
-    int vertexIndex;
-    int vertexDeletionIndex;
-
     //List of positions stored because LineRenderer doesnt grant access to its vertecies
     List<Vector3> lineVerticies;
 
-    //Timer variables
+    //Standard Input control variables
     const float LINE_DRAW_ITERATOR = 0.005f;
     const float LINE_DELETE_ITERATOR = 0.05f;
+
+    const float SLICE_TIME_LIMIT = 1.0f;
 
     private float timeDraw;
     private float timeDelete;
 
-    private float laserTimer;
-
     private bool firstClick = true;
 
+    //Laser control variables
+    private float laserTimer;
+    private bool laserCanFire;
+
+    //Will be used to track over-all time for all three facets of input
+    private float generalUseTimer;
+    
+    //Tracks current input mode
     private INPUT_MODE mode;
 
 	// Use this for initialization
@@ -43,12 +48,12 @@ public class InputHandler : MonoBehaviour {
         lr.SetVertexCount(0);
         lineVerticies = new List<Vector3>();
 
-        vertexDeletionIndex = 0;
-
         timeDelete = LINE_DELETE_ITERATOR;
         timeDraw = 0.0f;
 
         laserTimer = 0.0f;
+
+        generalUseTimer = 0.0f;
 
         mode = INPUT_MODE.NORMAL;
 	}
@@ -85,73 +90,84 @@ public class InputHandler : MonoBehaviour {
     {
         if (Input.GetAxis("Fire1") > 0)
         {
-            //This check prevents lifting mouse button, pressing it again and
-            //having the new line continue from the old one
-            if (firstClick)
+            if (generalUseTimer < SLICE_TIME_LIMIT)
             {
-                lineVerticies.Clear();
-                lr.SetVertexCount(0);
-                firstClick = false;
-            }
+                generalUseTimer += Time.deltaTime;
 
-            if (timeDraw < 0.0f)
-            {
-                Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                v.z = 0.0f;
+                //This check prevents lifting mouse button, pressing it again and
+                //having the new line continue from the old one
+                if (firstClick)
+                {
+                    lineVerticies.Clear();
+                    lr.SetVertexCount(0);
+                    firstClick = false;
+                }
 
-                lineVerticies.Add(v);
+                if (timeDraw < 0.0f)
+                {
+                    Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    v.z = 0.0f;
 
-                lr.SetVertexCount(lineVerticies.Count);
+                    lineVerticies.Add(v);
 
-                //Draw all vertecies in their current position
-                for (int i = 0; i < lineVerticies.Count; i++)
-                    lr.SetPosition(i, lineVerticies[i]);
+                    lr.SetVertexCount(lineVerticies.Count);
 
-                timeDraw = LINE_DRAW_ITERATOR;
-            }
-            else
-            {
-                timeDraw -= Time.deltaTime;
-            }
+                    //Draw all vertecies in their current position
+                    for (int i = 0; i < lineVerticies.Count; i++)
+                        lr.SetPosition(i, lineVerticies[i]);
 
-            if (timeDelete <= 0.0f)
-            {
-                //Remove first vertex to slowly delete the line
-                lineVerticies.RemoveAt(0);
-                lr.SetVertexCount(lineVerticies.Count);
+                    timeDraw = LINE_DRAW_ITERATOR;
+                }
+                else
+                {
+                    timeDraw -= Time.deltaTime;
+                }
 
-                timeDelete = LINE_DELETE_ITERATOR;
-            }
-            else
-            {
-                timeDelete -= Time.deltaTime;
-            }
-        }
-        else
-        {
-            firstClick = true;
-
-            if (lineVerticies.Count > 0)
-            {
                 if (timeDelete <= 0.0f)
                 {
-                    if (vertexDeletionIndex < lineVerticies.Count)
-                    {
-                        lineVerticies.RemoveAt(0);
-                        lr.SetVertexCount(lineVerticies.Count);
+                    //Remove first vertex to slowly delete the line
+                    lineVerticies.RemoveAt(0);
+                    lr.SetVertexCount(lineVerticies.Count);
 
-                        //I had to put this loop in again or else the line got erased backwards.
-                        //Dunno why.
-                        for (int i = 0; i < lineVerticies.Count; i++)
-                            lr.SetPosition(i, lineVerticies[i]);
-
-                        timeDelete = 0.025f;
-                    }
+                    timeDelete = LINE_DELETE_ITERATOR;
                 }
                 else
                 {
                     timeDelete -= Time.deltaTime;
                 }
+            }
+            else
+            {
+                HandleNormalMouseUp();
+            }
+        }
+        else
+        {
+            HandleNormalMouseUp();
+            generalUseTimer = 0.0f;
+            firstClick = true;
+        }
+    }
+
+    void HandleNormalMouseUp()
+    {
+        if (lineVerticies.Count > 0)
+        {
+            if (timeDelete <= 0.0f)
+            {
+                lineVerticies.RemoveAt(0);
+                lr.SetVertexCount(lineVerticies.Count);
+
+                //I had to put this loop in again or else the line got erased backwards.
+                //Dunno why.
+                for (int i = 0; i < lineVerticies.Count; i++)
+                    lr.SetPosition(i, lineVerticies[i]);
+
+                timeDelete = 0.025f;
+            }
+            else
+            {
+                timeDelete -= Time.deltaTime;
             }
         }
     }
@@ -186,5 +202,6 @@ public class InputHandler : MonoBehaviour {
     public void SetInputMode(INPUT_MODE newMode_)
     {
         mode = newMode_;
+        generalUseTimer = 0.0f;
     }
 }

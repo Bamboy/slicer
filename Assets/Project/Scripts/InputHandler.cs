@@ -32,6 +32,8 @@ public class InputHandler : MonoBehaviour {
     private float laserTimer;
     private bool laserCanFire;
 
+    public GameObject laserPrefab;
+
     //Will be used to track over-all time for all three facets of input
     private float generalUseTimer;
     
@@ -52,6 +54,7 @@ public class InputHandler : MonoBehaviour {
         timeDraw = 0.0f;
 
         laserTimer = 0.0f;
+        laserCanFire = true;
 
         generalUseTimer = 0.0f;
 
@@ -179,8 +182,17 @@ public class InputHandler : MonoBehaviour {
         {
             if (Input.GetMouseButtonDown(0))
             {
+                if(laserCanFire)
+                {
+                    GameObject g = GameObject.Instantiate(laserPrefab);
+                }
                 //create lasers here
                 Debug.Log("New laser!");
+            }
+            else
+            {
+                //Reset the input gate. Player MUST lift finger to spawn new laser
+                laserCanFire = true;
             }
             laserTimer += Time.deltaTime;
         }

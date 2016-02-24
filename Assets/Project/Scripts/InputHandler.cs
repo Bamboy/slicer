@@ -216,4 +216,9 @@ public class InputHandler : MonoBehaviour {
         mode = newMode_;
         generalUseTimer = 0.0f;
     }
+
+    public INPUT_MODE GetInputMode()
+    {
+        return mode;
+    }
 }

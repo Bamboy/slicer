@@ -50,5 +50,25 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	//TODO ability gauge
+	public AbilityMeterUI abilityMeterUI;
+	[SerializeField]
+	private float abilityMeter = 0f;
+	public float AbilityMeter
+	{
+		get{ return abilityMeter; }
+		set{
+			
+			abilityMeter = Mathf.Clamp01(value);
+			abilityMeterUI.OnMeterValueChanged(value); //Notify UI
+
+		}
+	}
+	public void AddMeter( float percentage )
+	{
+		//If meter multiplier is active, give more meter.
+		AbilityMeter += percentage; //* meterMultiplier;
+	}
+
+	//Is the ability meter full?
+	public bool AbilityMeterIsFull() { return ( abilityMeter == 1f ); }
 }

@@ -7,24 +7,19 @@ public class PointObject : MonoBehaviour, ISlicable
     public int pointValue = 1;
 
     //Make this value between 0 and 1
-    public float meterFill;
+    public float meterValue = 0.007f;
 
-
-    public FullSwingMeterScript fsmc;
-
-    void Start()
-    {
-        //We can happily find a more efficient way to do this. Dragging and dropping wasnt working for me
-        fsmc = GameObject.Find("Swing Bar").GetComponent<FullSwingMeterScript>();
-    }
 
     void ISlicable.OnSliced()
     {
         //Give us points
-        GameManager.Instance.AddPoints(pointValue);
+        GameManager.Instance.AddPoints( pointValue );
 
         //Temporary amount. Can be changed obviously
-        fsmc.AddToMeter(0.007f);
+		GameManager.Instance.AddMeter( meterValue );
+
+
+		CameraShake.Instance.ShakeCamera( 0.175f + (0.075f * pointValue), 0.15f * pointValue );
 
         //Trigger "Slice" event in wwise
         AkSoundEngine.PostEvent("Slice", GameObject.Find("UI Canvas"));

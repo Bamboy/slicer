@@ -36,6 +36,8 @@ public class SpriteSlice : MonoBehaviour
 
 		// LineLineIntersection
 
+		Debug.LogWarning("You should stop using this. It's cool but too complicated for our uses!", this);
+
 		bool isStartCorner;
 		int edgeIndex;
 		Vector3 start = SnapToBounds( obj, entry, out isStartCorner, out edgeIndex );

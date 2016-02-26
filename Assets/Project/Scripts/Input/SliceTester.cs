@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SliceTester : MonoBehaviour 
 {
+	//TODO - merge this script into InputHandler
+
 
 	//public RectTransform testdummy;
 	SpriteSlice slicer;
@@ -58,7 +60,7 @@ public class SliceTester : MonoBehaviour
 					{
 						s.OnSliced();
 
-						slicer.SliceSprite( lastPos, end, data.collider.GetComponent<RectTransform>() );
+						//slicer.SliceSprite( lastPos, end, data.collider.GetComponent<RectTransform>() );
 					}
 				}
 

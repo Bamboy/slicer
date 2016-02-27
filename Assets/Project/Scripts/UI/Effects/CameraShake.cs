@@ -46,7 +46,7 @@ public class CameraShake : MonoBehaviour
 			float thisIntensity = maxIntensity * intensityCurve.Evaluate( elapsedTime / duration );
 			transform.position = originalPosition + (Random.insideUnitSphere * thisIntensity);
 
-			elapsedTime += Time.deltaTime;
+			elapsedTime += Time.unscaledDeltaTime; //Unscaled delta time is uneffected by Time.timescale
 			yield return null;
 		}
 

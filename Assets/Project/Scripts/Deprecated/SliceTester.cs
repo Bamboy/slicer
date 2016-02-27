@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SliceTester : MonoBehaviour 
 {
-	//TODO - merge this script into InputHandler
+	//MERGED WITH INPUTHANDLER.CS, DO NOT USE
 
 
 	//public RectTransform testdummy;

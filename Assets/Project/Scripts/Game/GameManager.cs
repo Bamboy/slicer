@@ -1,6 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum GameModes
+{
+	MainMenu = 0,
+	Classic = 1,
+	Arcade = 2,
+	Pitch = 3,
+	Zen = 4
+};
+
 public class GameManager : MonoBehaviour 
 {
 	private static GameManager gm;
@@ -9,23 +18,72 @@ public class GameManager : MonoBehaviour
 		get{
 			if( gm == null )
 				Debug.LogError("No instance of GameManager was found in the scene!");
-
-				return gm; 
+			return gm; 
 		}
 	}
+
+	private static GameModes _gameMode = GameModes.MainMenu;
+	public static GameModes GameMode
+	{
+		get{ return _gameMode; }
+		set{
+			GameManager.Instance.StopAllCoroutines(); //This may cause problems if non-timer coroutines are implemented.
+
+			//Switch statement to reset values to defaults as if we started a new game of specified game type.
+			//Possibly add Application.LoadLevel here, handle ending of a game?
+			switch( value )
+			{
+			case GameModes.Classic:
+				GameManager.Instance.GameTime = 0f;
+				break;
+			case GameModes.Arcade:
+				GameManager.Instance.GameTime = 180f;
+				GameManager.Instance.StartCoroutine("Timer_Arcade"); //Start the timer loop
+				break;
+			case GameModes.Pitch:
+				GameManager.Instance.GameTime = 0f;
+				break;
+			case GameModes.Zen:
+				GameManager.Instance.GameTime = 0f;
+				break;
+			default: //Default act as main menu
+				GameManager.Instance.GameTime = 0f;
+				break;
+			}
+
+			//Reset general variables.
+			GameManager.Instance.Points = 0;
+			GameManager.Instance.Lives = 3;
+			GameManager.Instance.AbilityMeter = 0f;
+
+
+			//Set internal gamemode var
+			_gameMode = value;
+		}
+	}
+
 	void Awake()
 	{
-		gm = this;
+		if( gm != null )
+			Destroy( this.gameObject );
+		else
+			gm = this;
+
+		//TODO make the below dynamic based on loaded scene. We aren't worrying about other gamemodes yet so this is fine.
+		GameMode = GameModes.Arcade;
+
 		DontDestroyOnLoad( this.gameObject );
 	}
 
+
+	#region Points
 	[SerializeField]
-	private int points = 0;
+	private int _points = 0;
 	public int Points
 	{
-		get{ return points; }
+		get{ return _points; }
 		set{
-			points = value;
+			_points = value;
 			//Do other stuff like UI Animations here
 		}
 	}
@@ -34,13 +92,17 @@ public class GameManager : MonoBehaviour
 		//If pointmultiplier is active, give more points.
 		Points += amount; //* pointmultiplier
 	}
+	#endregion
+
+
+	#region Lives
 	[SerializeField]
-	private int lives = 3;
+	private int _lives = 3;
 	public int Lives
 	{
-		get{ return lives; }
+		get{ return _lives; }
 		set{
-			lives = value;
+			_lives = value;
 			if( value <= 0 )
 			{
 				//End the game.
@@ -49,16 +111,19 @@ public class GameManager : MonoBehaviour
 			//Do other stuff like UI Animations here
 		}
 	}
+	#endregion
 
+
+	#region AbilityMeter
 	public AbilityMeterUI abilityMeterUI;
 	[SerializeField]
-	private float abilityMeter = 0f;
+	private float _abilityMeter = 0f;
 	public float AbilityMeter
 	{
-		get{ return abilityMeter; }
+		get{ return _abilityMeter; }
 		set{
 			
-			abilityMeter = Mathf.Clamp01(value);
+			_abilityMeter = Mathf.Clamp01(value);
 			abilityMeterUI.OnMeterValueChanged(value); //Notify UI
 
 		}
@@ -70,5 +135,48 @@ public class GameManager : MonoBehaviour
 	}
 
 	//Is the ability meter full?
-	public bool AbilityMeterIsFull() { return ( abilityMeter == 1f ); }
+	public bool AbilityMeterIsFull() { return ( _abilityMeter == 1f ); }
+	#endregion
+
+	#region GameTimer
+	private float _gameTime = 0f;
+	public float GameTime
+	{
+		get{ return _gameTime; }
+		set{
+			//Do different things here based on game mode.
+			switch( GameMode )
+			{
+			case GameModes.Arcade:
+				if( value <= 0f )
+				{
+					//Time has run out, end the game.
+					StopCoroutine("Timer_Arcade");
+
+					Debug.LogWarning("Game has run out of time.");
+					Debug.Break();
+				}
+				break;
+			default:
+				break;
+			}
+				
+			_gameTime = value;
+		}
+	}
+
+	IEnumerator Timer_Arcade()
+	{
+		while( true )
+		{
+			GameTime = GameTime -= Time.deltaTime; //TODO - make our own delta time variable that will scale negatively
+			yield return null;
+		}
+	}
+
+	//TODO - default increasing timer.
+
+
+
+	#endregion
 }

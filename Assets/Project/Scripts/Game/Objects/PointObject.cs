@@ -22,23 +22,15 @@ public class PointObject : MonoBehaviour, ISlicable
 		CameraShake.Instance.ShakeCamera( 0.175f + (0.075f * pointValue), 0.15f * pointValue );
 
         //Trigger "Slice" event in wwise
-		AkSoundEngine.PostEvent("Slice", Camera.main.gameObject);
+        AkSoundEngine.PostEvent("Slice", GameObject.Find("UI Canvas"));
 
-        Destroy(gameObject);
+        DestroyImmediate(gameObject);
     }
 
 
     void OnCollisionEnter2D(Collision2D c)
     {
         if (c.collider.tag == "Destroy")
-		{
-			if( GameManager.GameMode == GameModes.Pitch )
-			{
-				GameManager.Instance.Lives -= 1;
-			}
-
-
-			Destroy(this.gameObject);
-		}
+            Destroy(this.gameObject);
     }
 }

@@ -62,8 +62,8 @@ public class InputHandler : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () 
-	{
+	void Update () {
+
         switch(mode)
         {
             case INPUT_MODE.NORMAL:
@@ -111,28 +111,8 @@ public class InputHandler : MonoBehaviour {
                     Vector3 v = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     v.z = 0.0f;
 
-
-					if( lineVerticies.Count > 0 )
-					{
-						Vector3 lastPosition = lineVerticies[lineVerticies.Count - 1];
-
-						//See if the mouse hit something since last frame
-						RaycastHit2D data = Physics2D.Linecast( lastPosition, v );
-						if( data.collider != null )
-						{
-							ISlicable s = data.collider.GetComponent<ISlicable>();
-							if( s != null )
-							{
-
-								//Tell the object that it has been hit with a slice.
-								s.OnSliced();
-								
-							}
-						}
-					}
-
-
                     lineVerticies.Add(v);
+
                     lr.SetVertexCount(lineVerticies.Count);
 
                     //Draw all vertecies in their current position

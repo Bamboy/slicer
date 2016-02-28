@@ -1,4 +1,4 @@
-# slicer
+# Slicer
 
 <h2>Back-Story </h2>
 <p>Coming Soon</p>

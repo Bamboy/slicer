@@ -16,7 +16,7 @@
 <h2>Current Build</h2>
 <h3>Build updated today on 2/27/2016</h3>
 <ul>
-<il>Added Backgrounds from OpenGameArt.com and Fonts from Google Play</li>
+<li>Added Backgrounds from OpenGameArt.com and Fonts from Google Play</li>
 <li>Timer is set up but UI buttons are broken for the Time Being</li>
 </ul>
 </ol>

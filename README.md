@@ -4,7 +4,6 @@
 <p>Coming Soon</p>
 <h2>Gameplay </h2>
 <ul>
-<li></li>
 <li>Objects can be destroyed with an swipe of your finger and watch the gauge fill to trigger the Power of FULL SWING</li>
 <li>Use the power of Creation to stop the flow of time itself or control the lazers from the cosmos</li>
 </ul>

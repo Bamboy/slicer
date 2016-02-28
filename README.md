@@ -1,7 +1,5 @@
 # slicer
 
-<h1> Slicer </h1>
-
 <h2>Back-Story </h2>
 <p>Coming Soon</p>
 <h2>Gameplay </h2>

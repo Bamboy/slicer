@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class InputHandler : MonoBehaviour {
+public class InputHandler : MonoBehaviour
+{
 
     public enum INPUT_MODE
     {
@@ -34,14 +35,22 @@ public class InputHandler : MonoBehaviour {
 
     public GameObject laserPrefab;
 
+    //Disrupt control variables
+    private float disruptTimer;
+    private const float DISTRUPT_ABILITY_TIME = 2.0f;
+
+    public static float deltaTime = 0;
+    public static bool isTimeStopped = false;
+
     //Will be used to track over-all time for all three facets of input
     private float generalUseTimer;
-    
+
     //Tracks current input mode
     private INPUT_MODE mode;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         lr = GetComponent<LineRenderer>();
         slicer = GetComponent<SpriteSlice>();
 
@@ -56,15 +65,17 @@ public class InputHandler : MonoBehaviour {
         laserTimer = 0.0f;
         laserCanFire = true;
 
+        disruptTimer = 0.0f;
+
         generalUseTimer = 0.0f;
 
         mode = INPUT_MODE.NORMAL;
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-        switch(mode)
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        switch (mode)
         {
             case INPUT_MODE.NORMAL:
 
@@ -74,7 +85,9 @@ public class InputHandler : MonoBehaviour {
 
             case INPUT_MODE.ABILITY_TIME:
 
-                HandleTimeInput();
+                isTimeStopped = true;
+                deltaTime = Time.deltaTime;
+                Time.timeScale = 0;
 
                 break;
 
@@ -87,15 +100,25 @@ public class InputHandler : MonoBehaviour {
             default:
                 break;
         }
-	}
+
+        if (isTimeStopped)
+            HandleTimeInput();
+
+    }
 
     void HandleNormalInput()
     {
-        if (Input.GetAxis("Fire1") > 0)
+        if (Input.GetAxisRaw("Fire1") > 0)
         {
+            if (isTimeStopped)
+                Debug.Log("CLICKED");
             if (generalUseTimer < SLICE_TIME_LIMIT)
             {
+
                 generalUseTimer += Time.deltaTime;
+
+                if (isTimeStopped)
+                    generalUseTimer += deltaTime;
 
                 //This check prevents lifting mouse button, pressing it again and
                 //having the new line continue from the old one
@@ -112,24 +135,24 @@ public class InputHandler : MonoBehaviour {
                     v.z = 0.0f;
 
 
-					if( lineVerticies.Count > 0 )
-					{
-						Vector3 lastPosition = lineVerticies[lineVerticies.Count - 1];
+                    if (lineVerticies.Count > 0)
+                    {
+                        Vector3 lastPosition = lineVerticies[lineVerticies.Count - 1];
 
-						//See if the mouse hit something since last frame
-						RaycastHit2D data = Physics2D.Linecast( lastPosition, v );
-						if( data.collider != null )
-						{
-							ISlicable s = data.collider.GetComponent<ISlicable>();
-							if( s != null )
-							{
+                        //See if the mouse hit something since last frame
+                        RaycastHit2D data = Physics2D.Linecast(lastPosition, v);
+                        if (data.collider != null)
+                        {
+                            ISlicable s = data.collider.GetComponent<ISlicable>();
+                            if (s != null)
+                            {
 
-								//Tell the object that it has been hit with a slice.
-								s.OnSliced();
-								
-							}
-						}
-					}
+                                //Tell the object that it has been hit with a slice.
+                                s.OnSliced();
+
+                            }
+                        }
+                    }
 
 
                     lineVerticies.Add(v);
@@ -144,6 +167,9 @@ public class InputHandler : MonoBehaviour {
                 else
                 {
                     timeDraw -= Time.deltaTime;
+
+                    if (isTimeStopped)
+                        timeDraw -= deltaTime;
                 }
 
                 if (timeDelete <= 0.0f)
@@ -157,6 +183,9 @@ public class InputHandler : MonoBehaviour {
                 else
                 {
                     timeDelete -= Time.deltaTime;
+
+                    if (isTimeStopped)
+                        timeDelete -= deltaTime;
                 }
             }
             else
@@ -191,6 +220,9 @@ public class InputHandler : MonoBehaviour {
             else
             {
                 timeDelete -= Time.deltaTime;
+
+                if (isTimeStopped)
+                    timeDelete -= deltaTime;
             }
         }
     }
@@ -202,12 +234,10 @@ public class InputHandler : MonoBehaviour {
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if(laserCanFire)
+                if (laserCanFire)
                 {
                     GameObject g = GameObject.Instantiate(laserPrefab);
                 }
-                //create lasers here
-                Debug.Log("New laser!");
             }
             else
             {
@@ -226,9 +256,18 @@ public class InputHandler : MonoBehaviour {
 
     void HandleTimeInput()
     {
-        //Test junk
-        Debug.Log("TIME MAGIC YO!");
-        SetInputMode(INPUT_MODE.NORMAL);
+        if (disruptTimer < DISTRUPT_ABILITY_TIME)
+        {
+            disruptTimer += deltaTime;
+            SetInputMode(INPUT_MODE.NORMAL);
+        }
+        else
+        {
+            disruptTimer = 0;
+            deltaTime = 0;
+            Time.timeScale = 1;
+            isTimeStopped = false;
+        }
     }
 
     public void SetInputMode(INPUT_MODE newMode_)

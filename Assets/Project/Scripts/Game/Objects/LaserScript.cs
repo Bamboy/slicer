@@ -66,6 +66,25 @@ public class LaserScript : MonoBehaviour {
             //Move point at index ahead of the current leading point
             points[laserAtIndex] = points[LastLaserIndex] + laserDirection;
 
+            /* Laser Collision Detection */
+            {
+                Vector3 lastPosition = points[LastLaserIndex];
+
+                //See if the mouse hit something since last frame
+                RaycastHit2D data = Physics2D.Linecast(lastPosition, points[laserAtIndex]);
+                if (data.collider != null)
+                {
+                    ISlicable s = data.collider.GetComponent<ISlicable>();
+                    if (s != null)
+                    {
+
+                        //Tell the object that it has been hit with a slice.
+                        s.OnSliced();
+
+                    }
+                }
+            }
+
             //project that point into screen space to test its bounds
             Vector3 screenSpace = Camera.main.WorldToScreenPoint(points[laserAtIndex]);
 
@@ -84,7 +103,7 @@ public class LaserScript : MonoBehaviour {
             int i = laserAtIndex;
             int x = 0;
 
-            while(true)
+            while (true)
             {
                 lr.SetPosition(x, points[i]);
 
@@ -97,6 +116,7 @@ public class LaserScript : MonoBehaviour {
                 if (i == laserAtIndex)
                     break;
             }
+
 
             //set new laser index
             if (laserAtIndex - 1 >= 0)

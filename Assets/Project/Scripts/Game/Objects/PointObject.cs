@@ -9,7 +9,6 @@ public class PointObject : MonoBehaviour, ISlicable
     //Make this value between 0 and 1
     public float meterValue = 0.007f;
 
-
     void ISlicable.OnSliced()
     {
         //Give us points

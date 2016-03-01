@@ -169,7 +169,8 @@ public class GameManager : MonoBehaviour
 	{
 		while( true )
 		{
-			GameTime = GameTime -= Time.deltaTime; //TODO - make our own delta time variable that will scale negatively
+		    GameTime = GameTime -= Time.deltaTime; //TODO - make our own delta time variable that will scale negatively
+
 			yield return null;
 		}
 	}

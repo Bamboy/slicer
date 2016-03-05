@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ObjectSpawner : MonoBehaviour 
 {
-
+   
 	public Transform objectContainer;
 	public Transform leftSpawnPoint;
 	public Transform midSpawnPoint;
@@ -79,7 +79,8 @@ public class ObjectSpawner : MonoBehaviour
 		rb.AddTorque( (Random.value - 0.5f) * 650f );
 
 		Destroy( obj, 10f );
-	}
+       
+    }
 	
 	Vector3 GetSpawnLocation( int val )
 	{

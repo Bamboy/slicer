@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public enum GameModes
@@ -12,13 +13,17 @@ public enum GameModes
 
 public class GameManager : MonoBehaviour 
 {
-	private static GameManager gm;
+    GameObject[] FinishedObject;
+    // this is for the game ending and finished
+    
+    private static GameManager gm;
 	public static GameManager Instance
 	{
 		get{
 			if( gm == null )
 				Debug.LogError("No instance of GameManager was found in the scene!");
 			return gm; 
+            
 		}
 	}
 
@@ -39,6 +44,7 @@ public class GameManager : MonoBehaviour
 			case GameModes.Arcade:
 				GameManager.Instance.GameTime = 180f;
 				GameManager.Instance.StartCoroutine("Timer_Arcade"); //Start the timer loop
+               
 				break;
 			case GameModes.Pitch:
 				GameManager.Instance.GameTime = 0f;
@@ -139,9 +145,12 @@ public class GameManager : MonoBehaviour
 	#endregion
 
 	#region GameTimer
-	private float _gameTime = 0f;
+   
+	public float _gameTime = 0f;
+    
 	public float GameTime
 	{
+       
 		get{ return _gameTime; }
 		set{
 			//Do different things here based on game mode.
@@ -150,7 +159,8 @@ public class GameManager : MonoBehaviour
 			case GameModes.Arcade:
 				if( value <= 0f )
 				{
-					//Time has run out, end the game.
+                        //Time has run out, end the game.
+                    GameOver();
 					StopCoroutine("Timer_Arcade");
 
 					Debug.LogWarning("Game has run out of time.");
@@ -165,7 +175,39 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	IEnumerator Timer_Arcade()
+    //If Timer runs out the game ends there.
+    public void GameOver()
+    {
+        if (Time.timeScale == 1)
+        {
+            Time.timeScale = 0;
+            showFinished();
+        }
+        else if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
+            hideFinished();
+        }
+    }
+    public void showFinished()
+    {
+        foreach (GameObject g in FinishedObject)
+        {
+            g.SetActive(true);
+        }
+    }
+
+    //hides objects with ShowOnFinish tag
+    public void hideFinished()
+    {
+        foreach (GameObject g in FinishedObject)
+        {
+            g.SetActive(false);
+        }
+    }
+
+
+    IEnumerator Timer_Arcade()
 	{
 		while( true )
 		{

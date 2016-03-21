@@ -7,8 +7,6 @@ public class GameOver : GameManager {
     // Use this for initialization
 	public void StartFinish () {
         FinishedObject = GameObject.FindGameObjectsWithTag("ShowFinished");
-
-        
 	}
 
     //Time runs out

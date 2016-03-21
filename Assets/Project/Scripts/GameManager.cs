@@ -1,6 +1,94 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Collections;
+
+public class GameManager : MonoBehaviour {
+	#region Singleton Initialize
+	private static GameManager instance;
+	public static GameManager Instance {
+		get {
+			if (instance == null) {
+				instance = FindObjectOfType<GameManager> ();
+				if (instance == null) {
+					GameObject obj = new GameObject ();
+					obj.name = "Game Manager";
+					instance = obj.AddComponent<GameManager> ();
+				}
+			}
+			return instance;
+		}
+	}
+
+	public virtual void Awake ()
+	{
+		DontDestroyOnLoad (this.gameObject);
+		if (instance == null) {
+			instance = this as GameManager;
+		} else {
+			Destroy (gameObject);
+		}
+	}
+	#endregion
+
+
+	#region Game Modes
+	[System.Serializable]
+	public class GameMode {
+		[SerializeField]
+		public string name;
+		public GameObject[] displayObjects;
+		public AudioClip[] backgroundMusic;
+
+		public GameMode(string name) {
+			this.name = name;
+		}
+
+		public void Initialize() {
+			ToggleDisplayObjects (true);
+			AudioManager.Instance.PlayBackgroundMusic (backgroundMusic);
+		}
+
+		public void DeInitialize() {
+			ToggleDisplayObjects (false);
+		}
+
+		public void ToggleDisplayObjects(bool isOn) {
+			foreach (GameObject obj in displayObjects) {
+				obj.SetActive (isOn);
+			}
+		}
+	}
+
+	[System.Serializable]
+	public class GameModes {
+		public GameMode mainMenu = new GameMode ("Main Menu");
+		public GameMode classic = new GameMode ("Classic");
+		public GameMode arade = new GameMode ("Arcade");
+		public GameMode pitch = new GameMode ("Pitch");
+		public GameMode zen = new GameMode ("Zen");
+	}
+
+	public GameModes gameModes;
+	GameMode currentGameMode;
+
+	void SetMode(GameMode newMode) {
+		if (currentGameMode != null) {
+			currentGameMode.DeInitialize ();
+		}
+
+		currentGameMode = newMode;
+
+		currentGameMode.Initialize ();
+	}
+	#endregion
+
+
+	void Start() {
+		SetMode (gameModes.mainMenu);
+	}
+}
+
+/*
+
+:: OLD ::
 
 public enum GameModes
 {
@@ -23,8 +111,7 @@ public class GameManager : MonoBehaviour
 		get{
 			if( gm == null )
 				Debug.LogError("No instance of GameManager was found in the scene!");
-			return gm; 
-            
+			return gm;
 		}
 	}
 
@@ -43,7 +130,7 @@ public class GameManager : MonoBehaviour
 				GameManager.Instance.GameTime = 0f;
 				break;
 			case GameModes.Arcade:
-                GameManager.Instance.GameTime = 9f;
+				GameManager.Instance.GameTime = 5f;//180f;
 				GameManager.Instance.StartCoroutine("Timer_Arcade"); //Start the timer loop    
 				break;
 			case GameModes.Pitch:
@@ -79,6 +166,9 @@ public class GameManager : MonoBehaviour
 		GameMode = GameModes.Arcade;
 
 		DontDestroyOnLoad( this.gameObject );
+
+		FinishedScript = GameObject.FindGameObjectsWithTag("ShowFinished");
+		hideFinished ();
 	}
 
 
@@ -128,10 +218,8 @@ public class GameManager : MonoBehaviour
 	{
 		get{ return _abilityMeter; }
 		set{
-			
 			_abilityMeter = Mathf.Clamp01(value);
 			abilityMeterUI.OnMeterValueChanged(value); //Notify UI
-
 		}
 	}
 	public void AddMeter( float percentage )
@@ -144,8 +232,9 @@ public class GameManager : MonoBehaviour
 	public bool AbilityMeterIsFull() { return ( _abilityMeter == 1f ); }
 	#endregion
 
+
 	#region GameTimer
-   
+	public ObjectSpawner objectSpawner;
 	public float _gameTime = 0f;
     
 	public float GameTime
@@ -157,16 +246,14 @@ public class GameManager : MonoBehaviour
 			switch( GameMode )
 			{
 			case GameModes.Arcade:
-				if( value <= 0f )
-				{
-                        showFinished();
-     //                   //Time has run out, end the game.
-     //               GameOver();
-					StopCoroutine("Timer_Arcade");
-					Debug.LogWarning("Game has run out of time.");
-					Debug.Break();
+				if (value <= 0f) {
+					//Time has run out, end the game.
+					GameOver();
+					Debug.LogWarning ("Game has run out of time.");
+					//Debug.Break();
+				} else if (!objectSpawner.isSpawning) {
+					objectSpawner.isSpawning = true;
 				}
-                    
 				break;
 			default:
 				break;
@@ -176,14 +263,29 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-    ////If Timer runs out the game ends there.
-    //public void GameOver()
-    //{
+    //If Timer runs out the game ends there.
+    public void GameOver()
+    {
+		objectSpawner.isSpawning = false;
+		showFinished ();
+		StopCoroutine ("Timer_Arcade");
+    }
 
-    //}
+	public void OnRestart() {
+		SceneManager.LoadScene ("Gameplay");
+		//hideFinished ();
+		//objectSpawner.isSpawning = true;
+		//GameMode = GameModes.Arcade;
+	}
+
+	public void OnQuit() {
+		SceneManager.LoadScene ("MainMenu");
+		//hideFinished ();
+		//GameMode = GameModes.MainMenu;
+	}
+
     public void showFinished()
     {
-        FinishedScript = GameObject.FindGameObjectsWithTag("ShowFinished");
         foreach (GameObject g in FinishedScript)
         {
             g.SetActive(true);
@@ -209,7 +311,6 @@ public class GameManager : MonoBehaviour
 
 	//TODO - default increasing timer.
 
-
-
 	#endregion
 }
+*/

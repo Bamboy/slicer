@@ -21,7 +21,8 @@ public class ObjectSpawner : MonoBehaviour
 	public float maxTime = 180f;
 	public AnimationCurve pointSpawnRateOverTime;
 
-
+	[HideInInspector]
+	public bool isSpawning = false;
 
 	void Start () 
 	{
@@ -39,14 +40,23 @@ public class ObjectSpawner : MonoBehaviour
 
 	IEnumerator SpawnLoop()
 	{
-		float delay = Mathf.Clamp( pointSpawnRateOverTime.Evaluate( Time.timeSinceLevelLoad / maxTime ), /*maxSpawnratedelay =*/ 0.2f, /*minSpawnratedelay =*/ 2f);
-		//Debug.Log( delay );
-		yield return new WaitForSeconds( delay );
+		while (true) {
+			if (isSpawning) {
+				float delay = Mathf.Clamp (pointSpawnRateOverTime.Evaluate (Time.timeSinceLevelLoad / maxTime), /*maxSpawnratedelay =*/0.2f, /*minSpawnratedelay =*/2f);
+				//Debug.Log( delay );
 
-		int pointObjIndex = ExtRandom<int>.WeightedChoice(new int[5] {0,1,2,3,4}, pointObjectSpawnWeights);
+				yield return new WaitForSeconds (delay);
 
-		SpawnPointObject( pointObjIndex );
-		StartCoroutine("SpawnLoop");
+				if (isSpawning) {
+					int pointObjIndex = ExtRandom<int>.WeightedChoice (new int[5] { 0, 1, 2, 3, 4 }, pointObjectSpawnWeights);
+
+					SpawnPointObject (pointObjIndex);
+				}
+			} else {
+				yield return null;
+			}
+		}
+		//StartCoroutine("SpawnLoop");
 	}
 
 	void SpawnPointObject( int pointObject )

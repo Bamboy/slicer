@@ -13,7 +13,8 @@ public enum GameModes
 
 public class GameManager : MonoBehaviour 
 {
-    GameObject[] FinishedObject;
+    GameObject[] FinishedScript;
+    
     // this is for the game ending and finished
     
     private static GameManager gm;
@@ -42,9 +43,8 @@ public class GameManager : MonoBehaviour
 				GameManager.Instance.GameTime = 0f;
 				break;
 			case GameModes.Arcade:
-				GameManager.Instance.GameTime = 180f;
-				GameManager.Instance.StartCoroutine("Timer_Arcade"); //Start the timer loop
-               
+                GameManager.Instance.GameTime = 9f;
+				GameManager.Instance.StartCoroutine("Timer_Arcade"); //Start the timer loop    
 				break;
 			case GameModes.Pitch:
 				GameManager.Instance.GameTime = 0f;
@@ -159,13 +159,14 @@ public class GameManager : MonoBehaviour
 			case GameModes.Arcade:
 				if( value <= 0f )
 				{
-                        //Time has run out, end the game.
-                    GameOver();
+                        showFinished();
+     //                   //Time has run out, end the game.
+     //               GameOver();
 					StopCoroutine("Timer_Arcade");
-
 					Debug.LogWarning("Game has run out of time.");
 					Debug.Break();
 				}
+                    
 				break;
 			default:
 				break;
@@ -175,37 +176,26 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-    //If Timer runs out the game ends there.
-    public void GameOver()
-    {
-        if (Time.timeScale == 1)
-        {
-            Time.timeScale = 0;
-            showFinished();
-        }
-        else if (Time.timeScale == 0)
-        {
-            Time.timeScale = 1;
-            hideFinished();
-        }
-    }
+    ////If Timer runs out the game ends there.
+    //public void GameOver()
+    //{
+
+    //}
     public void showFinished()
     {
-        foreach (GameObject g in FinishedObject)
+        FinishedScript = GameObject.FindGameObjectsWithTag("ShowFinished");
+        foreach (GameObject g in FinishedScript)
         {
             g.SetActive(true);
         }
     }
-
-    //hides objects with ShowOnFinish tag
     public void hideFinished()
     {
-        foreach (GameObject g in FinishedObject)
+        foreach (GameObject g in FinishedScript)
         {
             g.SetActive(false);
         }
     }
-
 
     IEnumerator Timer_Arcade()
 	{

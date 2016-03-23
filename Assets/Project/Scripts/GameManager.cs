@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 	#region Singleton Initialize
@@ -31,58 +32,61 @@ public class GameManager : MonoBehaviour {
 
 	#region Game Modes
 	[System.Serializable]
-	public class GameMode {
-		[SerializeField]
-		public string name;
-		public GameObject[] displayObjects;
-		public AudioClip[] backgroundMusic;
+	public class MainMenu : GameMode {
+		public Button arcadeModeButton;
+		public Button optionsButton;
+		public Button creditsButton;
+		public Button quitButton;
 
-		public GameMode(string name) {
+		public System.Action onArcadeButton = delegate { };
+		public System.Action onOptionsButton = delegate { };
+		public System.Action onCreditsButton = delegate { };
+		public System.Action onQuitButton = delegate { };
+
+		public MainMenu(string name) {
 			this.name = name;
 		}
 
-		public void Initialize() {
-			ToggleDisplayObjects (true);
-			AudioManager.Instance.PlayBackgroundMusic (backgroundMusic);
-		}
-
-		public void DeInitialize() {
-			ToggleDisplayObjects (false);
-		}
-
-		public void ToggleDisplayObjects(bool isOn) {
-			foreach (GameObject obj in displayObjects) {
-				obj.SetActive (isOn);
-			}
+		public new void Initialize() {
+			BindButton (arcadeModeButton, onArcadeButton);
+			BindButton (optionsButton, onOptionsButton);
+			BindButton (creditsButton, onCreditsButton);
+			BindButton (quitButton, onQuitButton);
 		}
 	}
 
 	[System.Serializable]
 	public class GameModes {
-		public GameMode mainMenu = new GameMode ("Main Menu");
-		public GameMode classic = new GameMode ("Classic");
-		public GameMode arade = new GameMode ("Arcade");
-		public GameMode pitch = new GameMode ("Pitch");
-		public GameMode zen = new GameMode ("Zen");
+		public MainMenu mainMenu = new MainMenu ("Main Menu");
+
+		public void Initialize() {
+			mainMenu.Initialize ();
+		}
 	}
 
-	public GameModes gameModes;
+	public GameModes gameModes = new GameModes ();
+	#endregion
+
 	GameMode currentGameMode;
 
-	void SetMode(GameMode newMode) {
+	public void Start() {
+		gameModes.mainMenu.onArcadeButton = delegate {
+			Debug.Log("Arcade mode");
+		};
+
+		gameModes.Initialize ();
+
+		SetMode (gameModes.mainMenu);
+	}
+
+	public void SetMode(GameMode newMode) {
 		if (currentGameMode != null) {
-			currentGameMode.DeInitialize ();
+			currentGameMode.Deactivate ();
 		}
 
 		currentGameMode = newMode;
 
-		currentGameMode.Initialize ();
-	}
-	#endregion
-
-
-	void Start() {
-		SetMode (gameModes.mainMenu);
+		currentGameMode.Activate ();
 	}
 }
 

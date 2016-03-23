@@ -36,8 +36,10 @@ public class AudioManager : MonoBehaviour {
 	AudioSource bgAudioSource;
 
 	public void PlayBackgroundMusic(AudioClip[] musicArray) {
-		AudioClip randomMusic = musicArray [Random.Range (0, musicArray.Length)];
-		PlayBackgroundMusic (randomMusic);
+		if (musicArray.Length > 0) {
+			AudioClip randomMusic = musicArray [Random.Range (0, musicArray.Length)];
+			PlayBackgroundMusic (randomMusic);
+		}
 	}
 
 	public void PlayBackgroundMusic(AudioClip music) {
@@ -52,7 +54,6 @@ public class AudioManager : MonoBehaviour {
 			bgAudioSource.clip = music;
 			bgAudioSource.Play ();
 
-			Debug.Log ("Waiting");
 			yield return new WaitForSeconds (0.5f);
 		}
 	}

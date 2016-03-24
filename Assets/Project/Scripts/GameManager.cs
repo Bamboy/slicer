@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
+	
 	#region Singleton Initialize
 	private static GameManager instance;
 	public static GameManager Instance {
@@ -18,8 +21,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public virtual void Awake ()
-	{
+	public virtual void Awake () {
 		DontDestroyOnLoad (this.gameObject);
 		if (instance == null) {
 			instance = this as GameManager;
@@ -33,21 +35,25 @@ public class GameManager : MonoBehaviour {
 	#region Game Modes
 	[System.Serializable]
 	public class MainMenu : GameMode {
+		#region Buttons
 		public Button arcadeModeButton;
-		public Button optionsButton;
-		public Button creditsButton;
-		public Button quitButton;
-
 		public System.Action onArcadeButton = delegate { };
+
+		public Button optionsButton;
 		public System.Action onOptionsButton = delegate { };
+
+		public Button creditsButton;
 		public System.Action onCreditsButton = delegate { };
+
+		public Button quitButton;
 		public System.Action onQuitButton = delegate { };
+		#endregion
 
-		public MainMenu(string name) {
-			this.name = name;
-		}
+		public MainMenu() : base("Main Menu") { }
 
-		public new void Initialize() {
+		public override void Initialize() {
+			base.Initialize ();
+			// Assign methods to button's onClick event
 			BindButton (arcadeModeButton, onArcadeButton);
 			BindButton (optionsButton, onOptionsButton);
 			BindButton (creditsButton, onCreditsButton);
@@ -55,28 +61,289 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+
+	[System.Serializable]
+	public class ClassicMode : GameMode {
+		public ClassicMode() : base("Classic") { }
+
+		public override void Initialize() {
+			base.Initialize ();
+		}
+	}
+	
+	[System.Serializable]
+	public class ArcadeMode : GameMode {
+		#region Timer variables
+		public Text timerText;
+
+		public float timerSeconds = 180f;
+		float timeRemaining = 0f;
+		float startTime = 0f;
+		float curTime = 0f;
+		float endTime = 0f;
+
+		float flashColorIncrement = 1f;
+		float currentColorFlashValue = 0f;
+		#endregion
+
+
+		#region Buttons
+		public Button timeAbilityButton;
+		public System.Action onTimeAbilityButton = delegate { };
+
+		public Button spaceAbilityButton;
+		public System.Action onSpaceAbilityButton = delegate { };
+		#endregion
+
+		bool laserAbilityIsOn = false;
+		float laserAbilityStartTime = 0f;
+
+		public GameObject[] objectsToSpawn;
+
+		public ArcadeMode() : base("Arcade") { }
+
+		public override void Initialize() {
+			base.Initialize ();
+			// Assign methods to button's onClick event
+			BindButton (timeAbilityButton, onTimeAbilityButton);
+			BindButton (spaceAbilityButton, onSpaceAbilityButton);
+		}
+
+		public override void Activate() {
+			base.Activate ();
+			startTime = Time.time;
+			endTime = startTime + timerSeconds;
+
+			GameManager.Instance.StartCoroutine (SpawnObj ());
+		}
+
+		public override void Update() {
+			base.Update ();
+			RunTimer ();
+		}
+
+		public void RunTimer() {
+			curTime = Time.time - startTime;
+			timeRemaining = endTime - curTime;
+
+			if (curTime > timerSeconds) {
+				timerText.text = "Time remaining: 00:00";
+				timerText.color = Color.red;
+			} else {
+				string timeFormat = Utilities.DateAndTime.SecondsToTime (timeRemaining);
+				timerText.text = "Time remaining: " + timeFormat;
+
+				int secondsRemaining = Mathf.FloorToInt (timeRemaining);
+				if ((secondsRemaining <= 30 && secondsRemaining >= 25 + 1) || (secondsRemaining <= 10)) {
+					currentColorFlashValue += 0.05f * flashColorIncrement;
+
+					if (flashColorIncrement > 0f && currentColorFlashValue >= 1f) {
+						flashColorIncrement = -1f;
+						currentColorFlashValue = 1f;
+					} else if (flashColorIncrement < 0f && currentColorFlashValue <= 0f) {
+						flashColorIncrement = 1f;
+						currentColorFlashValue = 0f;
+					}
+
+					Color curColor = timerText.color;
+					curColor.g = curColor.b = currentColorFlashValue;
+
+					timerText.color = curColor;
+				} else if (timerText.color != Color.white) {
+					timerText.color = Color.white;
+				}
+			}
+		}
+
+		public IEnumerator SpawnObj() {
+			while (true) {
+				GameObject randomObj = objectsToSpawn [Random.Range (0, objectsToSpawn.Length)];
+				GameObject newObj = Instantiate (randomObj);
+
+				Vector3 screenPoint = new Vector3 (Random.Range (0, Screen.width), 0, 10f);
+				newObj.transform.position = Camera.main.ScreenToWorldPoint (screenPoint);
+
+				float xForce;
+				if (screenPoint.x < Screen.width / 2f) {
+					xForce = Random.Range (1f, 3f);
+				} else {
+					xForce = -Random.Range (1f, 3f);
+				}
+
+				newObj.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (xForce, Random.Range (8f, 12f)), ForceMode2D.Impulse);
+
+				GameManager.Instance.StartCoroutine (slicerObjectUpdate (newObj));
+
+				DestroyObject (newObj, 8f);
+
+				yield return new WaitForSeconds (1.5f);
+			}
+		}
+
+		public IEnumerator slicerObjectUpdate(GameObject obj) {
+			float rotationValue = (Random.Range(0,2) * 2 - 1) * Mathf.Abs (Random.Range (100f, 300f));
+
+			while (obj != null) {
+				obj.transform.Rotate (0, 0, rotationValue * Time.deltaTime);
+
+				Vector3 screenPoint = Camera.main.WorldToScreenPoint (obj.transform.position + Vector3.up * 2f);
+				if (screenPoint.y < 0) {
+					Destroy (obj);
+				}
+				yield return null;
+			}
+		}
+
+		public IEnumerator TimeAbility() {
+			Time.timeScale = 0f;
+			yield return Utilities.Coroutines.WaitForRealSeconds (5f);
+			Time.timeScale = 1f;
+		}
+
+		public IEnumerator SpaceAbility() {
+			if (!laserAbilityIsOn) {
+				laserAbilityIsOn = true;
+				laserAbilityStartTime = Time.realtimeSinceStartup;
+			}
+
+			GameObject lineRenderObject = new GameObject ("Line Renderer");
+			LineRenderer lineRenderer = lineRenderObject.AddComponent<LineRenderer> ();
+
+			lineRenderer.SetWidth(0.05f, 0.05f);
+			lineRenderer.SetVertexCount(12);
+
+			List<Vector3> pointList = new List<Vector3> ();
+
+			Vector3 point = Camera.main.ScreenToWorldPoint (new Vector3 (Random.Range (0, Screen.width), Random.Range (0, Screen.height), 10f));
+
+			for (int i = 0; i < 12; i++) {
+				pointList.Add (new Vector3 (point.x, point.y, 0));
+			}
+
+			Vector3 laserDirection = new Vector3 (Random.Range (-1f, 1f), Random.Range (-1f, 1f), 0).normalized * 1f;
+			laserDirection.z = 0f;
+
+			int outOfBoundsCount = 0;
+
+			while (true) {
+				Vector3 lastPoint = pointList [pointList.Count - 1];
+				Vector3 screenPoint = Camera.main.WorldToScreenPoint (lastPoint);
+
+				bool outOfScreenBoundsX = screenPoint.x < 0 || screenPoint.x > Screen.width;
+				bool outOfScreenBoundsY = screenPoint.y < 0 || screenPoint.y > Screen.height;
+
+				bool outOfScreenBounds = outOfScreenBoundsX || outOfScreenBoundsY;
+				bool timeRanOut = Time.realtimeSinceStartup >= laserAbilityStartTime + 4f;
+				
+				if (!timeRanOut) {
+					if (outOfScreenBoundsX) {
+						laserDirection.x *= -1;
+					}
+					if (outOfScreenBoundsY) {
+						laserDirection.y *= -1;
+					}
+				} else if (outOfScreenBounds) {
+					outOfBoundsCount++;
+
+					if (outOfBoundsCount >= 11) {
+						break;
+					}
+				}
+
+				if ((timeRanOut && !outOfScreenBounds) || (!timeRanOut)) {
+					Vector3 noise = new Vector3 (Random.Range (0, 0), Random.Range (0, 0), 0);
+					pointList [pointList.Count - 1] = new Vector3 (lastPoint.x, lastPoint.y, 0) + laserDirection + noise;
+					lineRenderer.SetPosition (pointList.Count - 1, pointList [pointList.Count - 1]);
+				}
+
+				for (int i = 0; i < pointList.Count - 1; i++) {
+					RaycastHit2D hitData = Physics2D.Linecast(pointList [i], pointList [i + 1]);
+					if (hitData.collider != null) {
+						Destroy (hitData.collider.gameObject);
+					}
+
+					pointList [i] = pointList [i + 1];
+
+					lineRenderer.SetPosition (i, pointList [i]);
+				}
+
+
+
+				yield return null;
+			}
+
+			DestroyObject (lineRenderObject);
+			laserAbilityIsOn = false;
+
+			yield return null;
+		}
+	}
+
+
+	[System.Serializable]
+	public class PitchMode : GameMode {
+		public PitchMode() : base("Pitch") { }
+
+		public override void Initialize() {
+			base.Initialize ();
+		}
+	}
+
+
+	[System.Serializable]
+	public class ZenMode : GameMode {
+		public ZenMode() : base("Zen") { }
+
+		public override void Initialize() {
+			base.Initialize ();
+		}
+	}
+	#endregion
+	
+	
 	[System.Serializable]
 	public class GameModes {
-		public MainMenu mainMenu = new MainMenu ("Main Menu");
+		public MainMenu mainMenu = new MainMenu ();
+		public ClassicMode classicMode = new ClassicMode ();
+		public ArcadeMode arcadeMode = new ArcadeMode ();
+		public PitchMode pitchMode = new PitchMode ();
+		public ZenMode zenMode = new ZenMode ();
 
 		public void Initialize() {
 			mainMenu.Initialize ();
+			classicMode.Initialize ();
+			arcadeMode.Initialize ();
+			pitchMode.Initialize ();
+			zenMode.Initialize ();
 		}
 	}
 
 	public GameModes gameModes = new GameModes ();
-	#endregion
 
 	GameMode currentGameMode;
 
 	public void Start() {
 		gameModes.mainMenu.onArcadeButton = delegate {
-			Debug.Log("Arcade mode");
+			SetMode(gameModes.arcadeMode);
+		};
+
+		gameModes.arcadeMode.onTimeAbilityButton = delegate {
+			StartCoroutine(gameModes.arcadeMode.TimeAbility());
+		};
+
+		gameModes.arcadeMode.onSpaceAbilityButton = delegate {
+			StartCoroutine(gameModes.arcadeMode.SpaceAbility());
 		};
 
 		gameModes.Initialize ();
 
 		SetMode (gameModes.mainMenu);
+	}
+
+	public void Update() {
+		if (currentGameMode != null) {
+			currentGameMode.Update ();
+		}
 	}
 
 	public void SetMode(GameMode newMode) {

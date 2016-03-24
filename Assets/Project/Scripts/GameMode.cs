@@ -9,18 +9,21 @@ public class GameMode {
 
 	bool active = false;
 
-	public void Initialize() {
-
+	public GameMode(string name) {
+		this.name = name;
 	}
 
-	public void Activate() {
+	public virtual void Initialize() { }
+	public virtual void Update() { }
+
+	public virtual void Activate() {
 		active = true;
 
 		ToggleDisplayObjects (true);
 		AudioManager.Instance.PlayBackgroundMusic (backgroundMusic);
 	}
 
-	public void Deactivate() {
+	public virtual void Deactivate() {
 		active = false;
 
 		ToggleDisplayObjects (false);

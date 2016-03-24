@@ -100,6 +100,8 @@ public class GameManager : MonoBehaviour {
 
 		public GameObject[] objectsToSpawn;
 
+		public Material lineMat;
+
 		public ArcadeMode() : base("Arcade") { }
 
 		public override void Initialize() {
@@ -115,11 +117,81 @@ public class GameManager : MonoBehaviour {
 			endTime = startTime + timerSeconds;
 
 			GameManager.Instance.StartCoroutine (SpawnObj ());
+			GameManager.Instance.StartCoroutine (RunSlashing ());
 		}
 
 		public override void Update() {
 			base.Update ();
 			RunTimer ();
+		}
+
+		public IEnumerator RunSlashing() {
+			bool firstClick = true;
+
+			LineRenderer lineRenderer = new LineRenderer ();
+			List<Vector3> pointList = new List<Vector3> (6);
+
+			int pointIndex = 0;
+
+			while (true) {
+				if (Input.GetMouseButton (0)) {
+					if (firstClick) {
+						firstClick = false;
+
+						if (pointList != null) {
+							pointList = new List<Vector3> (24);
+						}
+						if (lineRenderer != null) {
+							Destroy (lineRenderer.gameObject);
+						}
+
+						GameObject lineRenderObject = new GameObject ("Line Renderer");
+						lineRenderer = lineRenderObject.AddComponent<LineRenderer> ();
+
+						lineRenderer.SetWidth (0.01f, 0.2f);
+						lineRenderer.SetColors (new Color (1, 1, 1, 0), Color.white);
+						lineRenderer.SetVertexCount (24);
+
+						lineRenderer.sharedMaterial = lineMat;
+
+						for (int i = 0; i < 24; i++) {
+							Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+							mousePos.z = 0;
+
+							pointList.Add (mousePos);
+							lineRenderer.SetPosition (i, mousePos);
+						}
+					} else {
+						Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+						mousePos.z = 0;
+
+						pointList [pointList.Count - 1] = mousePos;
+						lineRenderer.SetPosition (pointList.Count - 1, pointList [pointList.Count - 1]);
+
+						for (int i = 0; i < 24 - 1; i++) {
+							if (i >= 20) {
+								RaycastHit2D hitData = Physics2D.Linecast(pointList [i], pointList [i + 1]);
+								if (hitData.collider != null) {
+									Destroy (hitData.collider.gameObject);
+								}
+							}
+
+							pointList [i] = pointList [i + 1];
+							lineRenderer.SetPosition (i, pointList [i]);
+						}
+					}
+				} else {
+					if (lineRenderer != null) {
+						Destroy (lineRenderer.gameObject);
+					}
+
+					if (!firstClick) {
+						firstClick = true;
+					}
+				}
+
+				yield return null;
+			}
 		}
 
 		public void RunTimer() {

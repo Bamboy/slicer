@@ -102,6 +102,13 @@ public class GameManager : MonoBehaviour {
 
 		public Material lineMat;
 
+		public Text pointsText;
+		public Text pointsTextShadow;
+
+		public Image pointsBar;
+
+		int points = 0;
+
 		public ArcadeMode() : base("Arcade") { }
 
 		public override void Initialize() {
@@ -129,7 +136,7 @@ public class GameManager : MonoBehaviour {
 			bool firstClick = true;
 
 			LineRenderer lineRenderer = new LineRenderer ();
-			List<Vector3> pointList = new List<Vector3> (6);
+			List<Vector3> pointList = new List<Vector3> (24);
 
 			int pointIndex = 0;
 
@@ -172,7 +179,16 @@ public class GameManager : MonoBehaviour {
 							if (i >= 20) {
 								RaycastHit2D hitData = Physics2D.Linecast(pointList [i], pointList [i + 1]);
 								if (hitData.collider != null) {
-									Destroy (hitData.collider.gameObject);
+									GameObject hitObject = hitData.collider.gameObject;
+
+									int objPoints = int.Parse (hitObject.name.Substring (14, 1));
+									points += objPoints;
+									pointsText.text = "Points: " + points.ToString ();
+									pointsTextShadow.text = "Points: " + points.ToString ();
+
+									pointsBar.fillAmount = Mathf.Min ((points / 100f), 1f);
+
+									Destroy (hitObject);
 								}
 							}
 
@@ -331,7 +347,16 @@ public class GameManager : MonoBehaviour {
 				for (int i = 0; i < pointList.Count - 1; i++) {
 					RaycastHit2D hitData = Physics2D.Linecast(pointList [i], pointList [i + 1]);
 					if (hitData.collider != null) {
-						Destroy (hitData.collider.gameObject);
+						GameObject hitObject = hitData.collider.gameObject;
+
+						int objPoints = int.Parse (hitObject.name.Substring (14, 1));
+						points += objPoints;
+						pointsText.text = "Points: " + points.ToString ();
+						pointsTextShadow.text = "Points: " + points.ToString ();
+
+						pointsBar.fillAmount = Mathf.Min ((points / 100f), 1f);
+
+						Destroy (hitObject);
 					}
 
 					pointList [i] = pointList [i + 1];

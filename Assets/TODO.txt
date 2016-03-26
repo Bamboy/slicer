@@ -1,0 +1,23 @@
+/*
+ * TODO:
+ * - Finish LineDraw script
+ *   - Add collision detection
+ * - Substitute code for line drawing in GameManager with methods from LineDraw
+ * - Add generic Singleton class to apply to all managers and singleton scripts
+ * - Add Lerping functions for floats, ints and colors to Utilities
+ * - Substitute code for controling slicer objects with new slicer object script attached to slicer object prefab
+ * - Substitute code for spawning slicer objects with new spawner script
+ * - Substitute code for managing time with new time manager script
+ * - Move the game mode code from GameManager to new game mode manager script
+ * - Substitute code for managing input with new input handler script
+ * - Document and comment the code
+ * - Implement hazards
+ * - Implement powerups
+ * - Make objects with higher value spawn less often
+ * - Make spawning get faster over time
+ * - Make camera shake on slashing of slicer object
+ * - Implement pause, resume and quit to menu
+ * - Implement sound effects into SoundManager
+ * - Implement classic mode
+ *
+ */

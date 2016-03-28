@@ -1,39 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AudioManager : MonoBehaviour {
-	#region Singleton Initialize
-	private static AudioManager instance;
-	public static AudioManager Instance {
-		get {
-			if (instance == null) {
-				instance = FindObjectOfType<AudioManager> ();
-				if (instance == null) {
-					GameObject obj = new GameObject ();
-					obj.name = "Audio Manager";
-					instance = obj.AddComponent<AudioManager> ();
-				}
-			}
-			return instance;
-		}
-	}
-
-	public virtual void Awake ()
-	{
-		DontDestroyOnLoad (this.gameObject);
-		if (instance == null) {
-			instance = this as AudioManager;
-		} else {
-			Destroy (gameObject);
-		}
-
-		#region Audio Initialize
-		bgAudioSource = GetComponent<AudioSource>();
-		#endregion
-	}
-	#endregion
-
+public class AudioManager : Singleton<AudioManager> {
 	AudioSource bgAudioSource;
+
+	public override void Awake() {
+		base.Awake ();
+		bgAudioSource = GetComponent<AudioSource>();
+	}
 
 	public void PlayBackgroundMusic(AudioClip[] musicArray) {
 		if (musicArray.Length > 0) {
@@ -62,7 +36,8 @@ public class AudioManager : MonoBehaviour {
 		bgAudioSource.Stop ();
 	}
 
-	void OnApplicationQuit() {
+	public override void OnApplicationQuit() {
 		StopBackgroundMusic ();
+		base.OnApplicationQuit();
 	}
 }

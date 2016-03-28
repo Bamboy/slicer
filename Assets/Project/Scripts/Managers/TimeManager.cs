@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Test : MonoBehaviour {
+public class TimeManager : MonoBehaviour {
+
+	float startTime;
+	float curTime;
 
 	// Use this for initialization
 	void Start () {

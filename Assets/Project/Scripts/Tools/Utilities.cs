@@ -41,7 +41,32 @@ public static class Utilities {
 		
 		public static class Lerp {
 
+			public static float LerpNum(float start, float end, float t) {
+				return (1 - t) * start + t * end;
+			}
 
+			public static Color LerpColorPingPong(Color startColor, Color endColor, float t) {
+				t = Mathf.PingPong (t, 1.0f);
+
+				float r1, g1, b1;
+				float r2, g2, b2;
+
+				r1 = startColor.r;
+				g1 = startColor.g;
+				b1 = startColor.b;
+
+				r2 = endColor.r;
+				g2 = endColor.g;
+				b2 = endColor.b;
+
+				float r, g, b;
+
+				r = LerpNum (r1, r2, t);
+				g = LerpNum (g1, g2, t);
+				b = LerpNum (b1, b2, t);
+
+				return new Color (r, g, b);
+			}
 
 		}
 

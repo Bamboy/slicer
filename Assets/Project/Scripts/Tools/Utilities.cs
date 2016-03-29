@@ -4,7 +4,8 @@ using System.Collections;
 public static class Utilities {
 
 	public static class Coroutines {
-		
+
+		// Used when Time.timeScale != 0
 		public static IEnumerator WaitForRealSeconds(float time) {
 			float start = Time.realtimeSinceStartup;
 
@@ -16,7 +17,8 @@ public static class Utilities {
 	}
 
 	public static class DateAndTime {
-		
+
+		// Format seconds to MM:SS
 		public static string SecondsToTime(float floatSeconds) {
 			int seconds = Mathf.FloorToInt (floatSeconds);
 			int minutes = seconds / 60;
@@ -45,6 +47,7 @@ public static class Utilities {
 				return (1 - t) * start + t * end;
 			}
 
+			// Lerp color between 2 values, using ping-pong effect
 			public static Color LerpColorPingPong(Color startColor, Color endColor, float t) {
 				t = Mathf.PingPong (t, 1.0f);
 

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 [System.Serializable]
 public class GameMode {
 	public string name;
+	// Which objects should be displayed when this mode is activated
 	public GameObject[] displayObjects;
 	public AudioClip[] backgroundMusic;
 
@@ -29,6 +30,7 @@ public class GameMode {
 		ToggleDisplayObjects (false);
 	}
 
+	// Toggle enabled value of objects that should be displayed / hidden
 	public void ToggleDisplayObjects(bool isOn) {
 		if (displayObjects.Length > 0) {
 			foreach (GameObject obj in displayObjects) {
@@ -37,6 +39,7 @@ public class GameMode {
 		}
 	}
 
+	// Bind a method to button click event
 	public void BindButton(Button button, System.Action callback) {
 		button.onClick.AddListener (delegate {
 			if (active) {

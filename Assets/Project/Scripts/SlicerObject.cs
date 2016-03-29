@@ -3,6 +3,7 @@ using System.Collections;
 
 public class SlicerObject : MonoBehaviour {
 
+	// How much the object will rotate
 	float rotationValue;
 
 	// Use this for initialization
@@ -15,6 +16,8 @@ public class SlicerObject : MonoBehaviour {
 		transform.Rotate (0, 0, rotationValue * Time.deltaTime);
 
 		Vector3 screenPoint = Camera.main.WorldToScreenPoint (transform.position + Vector3.up * 2f);
+
+		// Is object out of lower screen bound?
 		if (screenPoint.y < 0) {
 			Destroy (gameObject);
 		}

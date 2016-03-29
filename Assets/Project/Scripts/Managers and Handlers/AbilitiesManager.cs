@@ -45,13 +45,7 @@ public class AbilitiesManager : Singleton<AbilitiesManager> {
 
 		LineRenderManager.LineRenderObject lineRenderer = LineRenderManager.Instance.AddLineRenderer (0.05f, 0.05f, Color.red, Color.red, 12, 5);
 		lineRenderer.onCollision = delegate (GameObject obj) {
-			// How many points to give for this object?
-			// TODO: Make this given in slicer object script
-			int objPoints = int.Parse (obj.name.Substring (14, 1));
-
-			PointsHandler.Instance.AddPoints(objPoints);
-
-			Destroy (obj);
+			obj.GetComponent<ISlicable>().onSliced();
 		};
 
 		// Start with a random point, anywhere on the screen

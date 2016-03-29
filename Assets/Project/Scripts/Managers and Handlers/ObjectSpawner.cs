@@ -23,23 +23,83 @@ public sealed class ObjectSpawner : Singleton<ObjectSpawner> {
 			if (Time.time >= lastSpawnTime + spawnRate) {
 				lastSpawnTime = Time.time;
 
-				GameObject randomObj = objectsToSpawn [Random.Range (0, objectsToSpawn.Length)];
-				GameObject newObj = Instantiate (randomObj);
-
-				// Pick a random point on lower part of screen
-				Vector3 screenPoint = new Vector3 (Random.Range (0, Screen.width), 0, 10f);
-				newObj.transform.position = Camera.main.ScreenToWorldPoint (screenPoint);
-
-				// If object is left, push right and vice versa
-				float xForce;
-				if (screenPoint.x < Screen.width / 2f) {
-					xForce = Random.Range (1f, 3f);
-				} else {
-					xForce = -Random.Range (1f, 3f);
-				}
-
-				newObj.GetComponent<Rigidbody2D> ().AddForce (new Vector2 (xForce, Random.Range (8f, 12f)), ForceMode2D.Impulse);
+				spawnObject ();
 			}
 		}
+	}
+
+	public GameObject getRandomObject() {
+		GameObject randomObj = objectsToSpawn [Random.Range (0, objectsToSpawn.Length)];
+		return randomObj;
+	}
+
+	public Vector3 getRandomPosition() {
+		// Pick a random point on lower part of screen
+		Vector3 screenPoint = new Vector3 (Random.Range (0, Screen.width), 0, 10f);
+		Vector3 objPosition = Camera.main.ScreenToWorldPoint (screenPoint);
+
+		return objPosition;
+	}
+
+	public Vector2 getRandomForce(Vector3 objPos) {
+		Vector3 screenPoint = Camera.main.WorldToScreenPoint (objPos);
+
+		// If object is left, push right and vice versa
+		float xForce;
+		if (screenPoint.x < Screen.width / 2f) {
+			xForce = Random.Range (1f, 3f);
+		} else {
+			xForce = -Random.Range (1f, 3f);
+		}
+
+		return new Vector2 (xForce, Random.Range (8f, 12f));
+	}
+
+	public GameObject spawnObject() {
+		GameObject randomObj = getRandomObject ();
+		Vector3 randomPos = getRandomPosition ();
+		Vector2 randomForce = getRandomForce (randomPos);
+
+		return spawnObject (randomObj, randomPos, randomForce);
+	}
+
+	public GameObject spawnObject(GameObject obj) {
+		Vector3 randomPos = getRandomPosition ();
+		Vector2 randomForce = getRandomForce (randomPos);
+
+		return spawnObject (obj, randomPos, randomForce);
+	}
+
+	public GameObject spawnObject(Vector3 pos) {
+		GameObject randomObj = getRandomObject ();
+		Vector2 randomForce = getRandomForce (pos);
+
+		return spawnObject (randomObj, pos, randomForce);
+	}
+
+	public GameObject spawnObject(Vector2 force) {
+		GameObject randomObj = getRandomObject ();
+		Vector3 randomPos = getRandomPosition ();
+
+		return spawnObject (randomObj, randomPos, force);
+	}
+
+	public GameObject spawnObject(GameObject obj, Vector2 force) {
+		Vector3 randomPos = getRandomPosition ();
+		return spawnObject (obj, randomPos, force);
+	}
+
+	public GameObject spawnObject(Vector3 pos, Vector2 force) {
+		GameObject randomObj = getRandomObject ();
+		return spawnObject (randomObj, pos, force);
+	}
+
+	public GameObject spawnObject(GameObject obj, Vector3 pos, Vector2 force) {
+		GameObject newObj = Instantiate (obj);
+
+		newObj.transform.position = pos;
+		newObj.GetComponent<Rigidbody2D> ().AddForce (force, ForceMode2D.Impulse);
+
+		return newObj;
 	}
 }

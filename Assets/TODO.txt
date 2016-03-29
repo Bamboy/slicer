@@ -11,8 +11,8 @@
  * - Move the game mode code from GameManager to new game mode manager script (later)
  * - Substitute code for managing input with new input handler script +
  * - Make abilities available only on full bar and empty the bar once used +
- * - Document and comment the code
- * - Implement hazards
+ * - Document and comment the code +
+ * - Implement hazards +
  * - Implement powerups
  * - Make objects with higher value spawn less often
  * - Make spawning get faster over time

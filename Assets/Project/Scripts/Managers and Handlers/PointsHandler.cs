@@ -10,8 +10,6 @@ public class PointsHandler : Singleton<PointsHandler> {
 	public Image pointsBar;
 
 	int points = 0;
-
-	[HideInInspector]
 	public float barPercentage = 0f;
 
 	// Use this for initialization
@@ -25,11 +23,19 @@ public class PointsHandler : Singleton<PointsHandler> {
 	}
 
 	public void AddPoints(int value) {
-		points += value;
+		if (points + value < 0) {
+			SetPoints (0, -points);
+		} else {
+			SetPoints (points + value, value);
+		}
+	}
+
+	public void SetPoints(int value, int increment) {
+		points = value;
 		pointsText.text = "Points: " + points.ToString ();
 		pointsTextShadow.text = "Points: " + points.ToString ();
 
-		SetBarPercentage (barPercentage + value / 100f);
+		SetBarPercentage (barPercentage + increment / 100f);
 	}
 
 	public void SetBarPercentage(float value) {

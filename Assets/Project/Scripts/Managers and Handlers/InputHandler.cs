@@ -13,11 +13,7 @@ public class InputHandler : Singleton<InputHandler> {
 	void Start () {
 		lineRenderer = LineRenderManager.Instance.AddLineRenderer (0.01f, 0.2f, new Color (1, 1, 1, 0), Color.white, 24, 5);
 		lineRenderer.onCollision = delegate (GameObject obj) {
-			int objPoints = int.Parse (obj.name.Substring (14, 1));
-
-			PointsHandler.Instance.AddPoints(objPoints);
-
-			Destroy (obj);
+			obj.GetComponent<ISlicable>().onSliced();
 		};	
 	}
 	

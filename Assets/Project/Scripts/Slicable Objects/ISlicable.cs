@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class ISlicable : MonoBehaviour {
+	public float spawnProbability = 1f;
 
 	// How much the object will rotate
 	float rotationValue;

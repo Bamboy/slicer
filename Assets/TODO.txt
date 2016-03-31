@@ -14,9 +14,9 @@
  * - Document and comment the code +
  * - Implement hazards +
  * - Implement powerups
- * - Make objects with higher value spawn less often
- * - Make spawning get faster over time
- * - Make camera shake on slashing of slicer object
+ * - Make objects with higher value spawn less often +
+ * - Make spawning get faster over time +
+ * - Make camera shake on slashing of slicer object +
  * - Implement pause, resume and quit to menu
  * - Implement sound effects into SoundManager
  * - Implement classic mode

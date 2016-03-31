@@ -73,5 +73,11 @@ public static class Utilities {
 
 		}
 
+		public static class Noise {
+
+
+
+		}
+
 	}
 }

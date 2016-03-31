@@ -8,6 +8,8 @@ public class SlicerObject : MonoBehaviour {
 	public void Start() {
 		GetComponent<ISlicable> ().onSliced = delegate {
 			if (GetComponent<ISlicable> ().sliceEnabled) {
+				Camera.main.GetComponent<ShakeCamera>().Shake();
+
 				PointsHandler.Instance.AddPoints(pointValue);
 				Destroy (gameObject);
 			}

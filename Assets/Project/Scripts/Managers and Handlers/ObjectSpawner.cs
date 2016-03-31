@@ -24,12 +24,38 @@ public sealed class ObjectSpawner : Singleton<ObjectSpawner> {
 				lastSpawnTime = Time.time;
 
 				spawnObject ();
+
+				spawnRate -= spawnRate / 200f;
 			}
 		}
 	}
 
 	public GameObject getRandomObject() {
-		GameObject randomObj = objectsToSpawn [Random.Range (0, objectsToSpawn.Length)];
+		float weightSum = 0f;
+		float[] weightArray = new float[objectsToSpawn.Length];
+
+		for (int i = 0; i < objectsToSpawn.Length; i++) {
+			float weight = objectsToSpawn [i].GetComponent<ISlicable> ().spawnProbability;
+			weightSum += weight;
+			weightArray [i] = weight;
+		}
+
+		GameObject randomObj = null;
+
+		float randomNum = Random.Range (0f, weightSum);
+		for (int i = 0; i < objectsToSpawn.Length; i++) {
+			if (randomNum < weightArray [i]) {
+				randomObj = objectsToSpawn [i];
+				break;
+			} else {
+				randomNum -= weightArray [i];
+			}
+		}
+
+		if (randomObj == null) {
+			randomObj = objectsToSpawn [Random.Range (0, objectsToSpawn.Length)];
+		}
+
 		return randomObj;
 	}
 

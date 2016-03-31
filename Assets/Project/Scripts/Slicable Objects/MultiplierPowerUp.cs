@@ -7,6 +7,8 @@ public class MultiplierPowerUp : MonoBehaviour {
 	public void Start() {
 		GetComponent<ISlicable> ().onSliced = delegate {
 			if (GetComponent<ISlicable> ().sliceEnabled) {
+				Camera.main.GetComponent<ShakeCamera>().Shake();
+
 				Vector2 force1 = new Vector2(Random.Range(-5f, 5f), Random.Range(-2f, 10f));
 				Vector2 force2 = new Vector2(Random.Range(-5f, 5f), Random.Range(-2f, 10f));
 
@@ -23,7 +25,7 @@ public class MultiplierPowerUp : MonoBehaviour {
 
 	IEnumerator delaySlice(GameObject obj) {
 		obj.GetComponent<ISlicable> ().sliceEnabled = false;
-		yield return Utilities.Coroutines.WaitForRealSeconds (0.5f);
+		yield return Utilities.Coroutines.WaitForRealSeconds (0.3f);
 		if (obj != null) {
 			obj.GetComponent<ISlicable> ().sliceEnabled = true;
 		}

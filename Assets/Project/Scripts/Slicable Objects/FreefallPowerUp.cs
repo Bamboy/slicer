@@ -7,6 +7,8 @@ public class FreefallPowerUp : MonoBehaviour {
 	public void Start() {
 		GetComponent<ISlicable> ().onSliced = delegate {
 			if (GetComponent<ISlicable> ().sliceEnabled) {
+				Camera.main.GetComponent<ShakeCamera>().Shake();
+
 				GameManager.Instance.StartCoroutine(spawnObjects());
 
 				Destroy (gameObject);

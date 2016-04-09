@@ -55,7 +55,22 @@ public sealed class GameManager : Singleton<GameManager> {
 
 		public Button spaceAbilityButton;
 		public System.Action onSpaceAbilityButton = delegate { };
+
+		public Button restartButton;
+		public System.Action onRestartButton = delegate { };
+		public Button gameOverQuitButton;
+		public System.Action onGameOverQuitButton = delegate { };
+
+		public Button resumeButton;
+		public System.Action onResumeButton = delegate { };
+		public Button pauseQuitButton;
+		public System.Action onPauseQuitButton = delegate { };
 		#endregion
+
+		public GameObject gameOverUI;
+		public GameObject pauseGameUI;
+
+		bool gameOver = false;
 
 		public ArcadeMode() : base("Arcade") { }
 
@@ -64,10 +79,21 @@ public sealed class GameManager : Singleton<GameManager> {
 			// Assign methods to button's onClick event
 			BindButton (timeAbilityButton, onTimeAbilityButton);
 			BindButton (spaceAbilityButton, onSpaceAbilityButton);
+
+			BindButton (restartButton, onRestartButton);
+			BindButton (gameOverQuitButton, onGameOverQuitButton);
+
+			BindButton (resumeButton, onResumeButton);
+			BindButton (pauseQuitButton, onPauseQuitButton);
 		}
 
 		public override void Activate() {
 			base.Activate ();
+
+			gameOver = false;
+
+			ObjectSpawner.Instance.spawnRate = 1.5f;
+			TimeManager.Instance.timerSeconds = 180f;
 
 			ObjectSpawner.Instance.active = true;
 			InputHandler.Instance.active = true;
@@ -76,6 +102,24 @@ public sealed class GameManager : Singleton<GameManager> {
 
 		public override void Update() {
 			base.Update ();
+
+			if (!gameOver && TimeManager.Instance.timeRemaining <= 1) {
+				gameOver = true;
+
+				ObjectSpawner.Instance.active = false;
+				InputHandler.Instance.active = false;
+				TimeManager.Instance.active = false;
+				InputHandler.Instance.lineRenderer.DestroyRenderer ();
+
+				PointsHandler.Instance.SetPoints (0, 0);
+				PointsHandler.Instance.SetBarPercentage (0);
+
+				foreach (GameObject obj in GameObject.FindGameObjectsWithTag("ISlicable")) {
+					Destroy (obj);
+				}
+
+				gameOverUI.SetActive (true);
+			}
 		}
 	}
 
@@ -130,9 +174,22 @@ public sealed class GameManager : Singleton<GameManager> {
 		gameModes.arcadeMode.onTimeAbilityButton = delegate {
 			AbilitiesManager.Instance.RunTimeAbility();
 		};
-
 		gameModes.arcadeMode.onSpaceAbilityButton = delegate {
 			AbilitiesManager.Instance.NewLaser();
+		};
+		gameModes.arcadeMode.onRestartButton = delegate {
+			gameModes.arcadeMode.gameOverUI.SetActive(false);
+			SetMode(gameModes.arcadeMode);
+		};
+		gameModes.arcadeMode.onGameOverQuitButton = delegate {
+			gameModes.arcadeMode.gameOverUI.SetActive(false);
+			SetMode(gameModes.mainMenu);
+		};
+		gameModes.arcadeMode.onResumeButton = delegate {
+
+		};
+		gameModes.arcadeMode.onPauseQuitButton = delegate {
+			
 		};
 
 		gameModes.Initialize ();

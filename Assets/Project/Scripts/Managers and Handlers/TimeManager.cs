@@ -11,14 +11,14 @@ public class TimeManager : Singleton<TimeManager> {
 	public bool active = false;
 
 	float startTime = 0f;
-	float endTime {
+	public float endTime {
 		get { return startTime + timerSeconds; }
 	}
-	float curTime {
+	public float curTime {
 		get { return Time.time - startTime; }
 	}
-	float timeRemaining {
-		get { return endTime - curTime; }
+	public float timeRemaining {
+		get { return timerSeconds - curTime; }
 	}
 
 	public void StartTimer() {
@@ -34,7 +34,9 @@ public class TimeManager : Singleton<TimeManager> {
 	// Update is called once per frame
 	void Update () {
 		if (active) {
-			if (curTime > timerSeconds) {
+			//Debug.Log ("timerSeconds: " + timerSeconds + "\nstartTime: " + startTime + "\nendTime: " + endTime + "\ncurTime: " + curTime + "\ntimeRemaining: " + timeRemaining);
+
+			if (curTime > endTime) {
 				timerText.text = "Time remaining: 00:00";
 				timerText.color = Color.red;
 			} else {

@@ -4,7 +4,8 @@ using System.Collections;
 public class InputHandler : Singleton<InputHandler> {
 
 	bool isHoldingMouseDown = false;
-	LineRenderManager.LineRenderObject lineRenderer;
+	[HideInInspector]
+	public LineRenderManager.LineRenderObject lineRenderer;
 
 	[HideInInspector]
 	public bool active = false;
